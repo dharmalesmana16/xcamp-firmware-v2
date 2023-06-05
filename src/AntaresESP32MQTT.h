@@ -6,11 +6,12 @@
 #include <Wire.h>
 #include <Arduino.h>
 #include <WiFi.h>
+#include <EEPROM.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <PZEM004Tv30.h>
-#include "saveData.h"
-#include "parsingWaktu.h"
+// #include "saveData.h"
+// #include "parsingWaktu.h"
 #define DHTTYPE 22 
 #define DHTPIN 4
 #define RXD1 32  

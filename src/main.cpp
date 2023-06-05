@@ -15,7 +15,7 @@ float daya;
 float arus;
 float temp;
 float humi;
-int modeControl = readMode();
+// int modeControl = readMode();
 
 AntaresESP32MQTT antares(ACCESSKEY);
 DHT dht(DHTPIN,DHTTYPE);
@@ -77,8 +77,8 @@ void callback(char topic[], byte payload[], unsigned int length) {
   Serial.println("Payload: " + antares.getPayload());
   }
   if(mode == "MANUAL"){
-     modeControl = 0;
-     writeMode(modeControl);
+    //  modeControl = 0;
+    //  writeMode(modeControl);
     if(state == "ON"){
       // modeport1=1;
       // writePort1(modeport1);
