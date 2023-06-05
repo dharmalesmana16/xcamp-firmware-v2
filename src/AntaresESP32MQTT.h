@@ -10,8 +10,9 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <PZEM004Tv30.h>
-// #include "saveData.h"
-// #include "parsingWaktu.h"
+#include <RBDdimmer.h>
+#include "saveData.h"
+#include "parsingWaktu.h"
 #define DHTTYPE 22 
 #define DHTPIN 4
 #define RXD1 32  
@@ -34,8 +35,8 @@ private:
 public:
     AntaresESP32MQTT(String accessKey);
     bool wifiConnection(String SSID, String wifiPassword);
-    bool setDebug(bool trueFalse);
-    void printDebug(String text);
+    bool setDebugs(bool trueFalse);
+    void printText(String text);
     String ipToString(IPAddress ip);
     /* Overloaded functions: Add data to temporary storage */
     void add(String key, int value);

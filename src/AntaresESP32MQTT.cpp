@@ -9,10 +9,10 @@ AntaresESP32MQTT::AntaresESP32MQTT(String accessKey) {
 
 void AntaresESP32MQTT::setMqttServer() {
     if(WiFi.status() != WL_CONNECTED) {
-        printDebug("[ANTARES] Unable to connect to MQTT server.\n");
+        printText("[ANTARES] Unable to connect to MQTT server.\n");
     }
     else {
-        printDebug("[ANTARES] Setting MQTT server \"" + String(_mqttServer) + "\" on port " + String(_mqttPort) + "\n");
+        printText("[ANTARES] Setting MQTT server \"" + String(_mqttServer) + "\" on port " + String(_mqttPort) + "\n");
         client.setServer(_mqttServer, _mqttPort);
     }
 
@@ -23,7 +23,7 @@ void AntaresESP32MQTT::checkMqttConnection() {
 
     if(!client.connected()) {
         while(!client.connected()) {
-            printDebug("[ANTARES] Attempting MQTT connection...\n");
+            printText("[ANTARES] Attempting MQTT connection...\n");
 
             String clientId = "ESP32-" + _accessKey;
 
@@ -31,9 +31,9 @@ void AntaresESP32MQTT::checkMqttConnection() {
             clientId.toCharArray(clientIdChar, clientId.length() + 1);
 
             if(client.connect(clientIdChar)) {
-                printDebug("[ANTARES] Connected! Client ID:");
-                printDebug(clientIdChar);
-                printDebug("\n");
+                printText("[ANTARES] Connected! Client ID:");
+                printText(clientIdChar);
+                printText("\n");
                 char subscriptionTopicChar[_subscriptionTopic.length() + 1];
                 _subscriptionTopic.toCharArray(subscriptionTopicChar, _subscriptionTopic.length() + 1);
 
@@ -45,7 +45,7 @@ void AntaresESP32MQTT::checkMqttConnection() {
                 client.subscribe(subscriptionTopicChar);
             }
             else {
-                printDebug("[ANTARES] Failed, rc=" + String(client.state()) + ", Will try again in 5 secs.\n");
+                printText("[ANTARES] Failed, rc=" + String(client.state()) + ", Will try again in 5 secs.\n");
                 delay(5000);
             }
         }
@@ -65,22 +65,22 @@ bool AntaresESP32MQTT::wifiConnection(String SSID, String wifiPassword) {
     _wifiPass = wifiPasswordChar;
 
     WiFi.begin(_wifiSSID, _wifiPass);
-    printDebug("[ANTARES] Trying to connect to " + SSID + "...\n");
+    printText("[ANTARES] Trying to connect to " + SSID + "...\n");
 
     for (count=0;count<20;count++)
     {
       delay(500);
-      printDebug(".");
+      printText(".");
     }
 
     if(WiFi.status() != WL_CONNECTED) {
-        printDebug("[ANTARES] Could not connect to " + SSID + ".\n");
+        printText("[ANTARES] Could not connect to " + SSID + ".\n");
         return false;
     }
     else {
         WiFi.setAutoReconnect(true);
-        printDebug("\n[ANTARES] WiFi Connected!\n");
-        printDebug("[ANTARES] IP Address: " + ipToString(WiFi.localIP()) + "\n");
+        printText("\n[ANTARES] WiFi Connected!\n");
+        printText("[ANTARES] IP Address: " + ipToString(WiFi.localIP()) + "\n");
         return true;
     }
 }
@@ -122,10 +122,10 @@ void AntaresESP32MQTT::add(String key, String value) {
 }
 
 void AntaresESP32MQTT::printData() {
-    printDebug("[ANTARES] " + _jsonDataString + "\n");
+    printText("[ANTARES] " + _jsonDataString + "\n");
 }
 
-void AntaresESP32MQTT::printDebug(String text) {
+void AntaresESP32MQTT::printText(String text) {
     if(_debug) {
         Serial.print(text);
     }
@@ -139,7 +139,7 @@ void AntaresESP32MQTT::publish(String projectName, String deviceName) {
         DynamicJsonBuffer jsonBuffer;
         JsonObject& object = jsonBuffer.parseObject(_jsonDataString);
         Serial.print("[ANTARES] Publish Topic: ");Serial.println(topic);
-        printDebug("[ANTARES] PUBLISH DATA:\n\n");
+        printText("[ANTARES] PUBLISH DATA:\n\n");
         object.prettyPrintTo(Serial);
         Serial.println("\n");
     }
@@ -206,7 +206,7 @@ void AntaresESP32MQTT::setCallback(std::function<void(char*, uint8_t*, unsigned 
     client.setCallback(callbackFunc);
 }
 
-bool AntaresESP32MQTT::setDebug(bool trueFalse) {
+bool AntaresESP32MQTT::setDebugs(bool trueFalse) {
     _debug = trueFalse;
 }
 

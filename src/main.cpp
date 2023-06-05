@@ -6,7 +6,8 @@
 #define ACCESSKEY "ecfe802f4d7e8885:01ffe2986b9d9565"
 #define WIFISSID "XL-Guest"
 #define PASSWORD "Pri[o]rita$"
-
+#define outputPin  23
+#define zerocross  15
 #define projectName "smartpjuv1"
 #define deviceName "xcamp"
 float kwh;
@@ -15,22 +16,50 @@ float daya;
 float arus;
 float temp;
 float humi;
-// int modeControl = readMode();
-
+int modeControl = readMode();
+int hour;
+int minute;
+int detik;
+String times;
+int startHour = readStartHour();
+int endHour = readEndHour();
+int startMinute = readStartMinute(); 
+int endMinute = readEndMinute();
 AntaresESP32MQTT antares(ACCESSKEY);
 DHT dht(DHTPIN,DHTTYPE);
 PZEM004Tv30 pzem(&Serial1,RXD1,TXD1);
+bool manual = false;
+bool Auto = false;
+int modeport1 = readPort1();
+int modedimm = readPort2();
+dimmerLamp dimmer(outputPin, zerocross); //initialase port for dimmer for ESP8266, ESP32, Arduino due boards
 
 RTC_DS3231 rtc;
 void setup() {
   Serial.begin(115200);
-  // antares.setDebug(true);
+  antares.setDebugs(true);
   antares.wifiConnection(WIFISSID, PASSWORD);
   antares.setMqttServer();
-
-rtc.begin();
+  pinMode(25,OUTPUT);
+   dimmer.begin(NORMAL_MODE, ON); //dimmer initialisation: name.begin(MODE, STATE) 
+  if(modeport1 == 1){
+    digitalWrite(25,HIGH);
+    dimmer.setPower(90);
+  }
+  if(modeControl == 2 ){
+    dimmer.setPower(40);
+    digitalWrite(25,LOW);
+  }else if(modeControl == 0){
+    dimmer.setPower(90);
+  }
+  if(modeControl == 1 ){
+    Auto = true;
+  }else{
+    Auto = false;
+  }
+  rtc.begin();
   dht.begin();
-rtc.adjust(DateTime(F(__DATE__),F(__TIME__)));  
+// rtc.adjust(DateTime(F(__DATE__),F(__TIME__)));  
 }
 
 void loop() {
@@ -77,20 +106,12 @@ void callback(char topic[], byte payload[], unsigned int length) {
   Serial.println("Payload: " + antares.getPayload());
   }
   if(mode == "MANUAL"){
-    //  modeControl = 0;
-    //  writeMode(modeControl);
+  
     if(state == "ON"){
-      // modeport1=1;
-      // writePort1(modeport1);
-      // dimmer.setPower(90);
       digitalWrite(25,HIGH);
-      digitalWrite(26,HIGH);
     }else{
-      // modeport1 = 0;
-      // writePort1(modeport1);
       digitalWrite(25,LOW);
-      digitalWrite(26,LOW);
-      // dimmer.setPower(0);
+      
     }
   }
 }
