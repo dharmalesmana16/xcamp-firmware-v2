@@ -18,6 +18,7 @@ float arus;
 float temp;
 float humi;
 int modeControl = readMode();
+// int modeControl = readMode();
 int hour;
 int minute;
 int detik;
